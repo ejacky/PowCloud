@@ -1,5 +1,5 @@
 <?php echo $header; ?>
-<div class="row-fluid">
+<div class="row">
     <div class="">
         <?php echo \Utils\FormBuilderHelper::begin();//注册表单JS ?>
         <form data-status="0" id="addAppForm" class="form-horizontal"  action="<?php echo URL::action('DashBoardController@updateApp')?>" method="post">
