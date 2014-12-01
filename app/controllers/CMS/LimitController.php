@@ -97,14 +97,15 @@ class LimitController extends SystemController
         if (isset($group_data['group']['groupName'])) {
             $group->groupName = $group_data['group']['groupName'];
         } else {
-            $this->ajaxResponse(array(), 'fail', '不存在数组');
+            $this->ajaxResponse(BaseController::$FAILED, BaseController::$MESSAGE_NOT_EXISTS);
         }
 
-        if (!$group->save())
-            $this->ajaxResponse(array(), 'fail', '更新Group失败');
+        if (!$group->save()) {
+            $this->ajaxResponse(BaseController::$_FAILED_TEMPLATE);
+        }
 
         if (!isset($limit_data['limit'])) {
-            $this->ajaxResponse(array(), 'fail', '不存在limit_data[limit]数组');
+            $this->ajaxResponse(BaseController::$FAILED, BaseController::$MESSAGE_NOT_EXISTS);
         }
 
         foreach ($limit_data['limit'] as $key => $val) {
@@ -131,11 +132,12 @@ class LimitController extends SystemController
                     break;
             }
             if (!$go->save()) {
-                $this->ajaxResponse(array(), 'fail', '保存group_operation失败！');
+                $this->ajaxResponse(BaseController::$_FAILED_TEMPLATE);
+//                $this->ajaxResponse(array(), 'fail', '保存group_operation失败！');
             }
         }
-
-        $this->ajaxResponse(array(), 'success', '更新成功！', Url::action('LimitController@group'));
+        $this->ajaxResponse(BaseController::$SUCCESS, BaseController::$MESSAGE_DO_SUCCESS, '', Url::action('LimitController@group'));
+//        $this->ajaxResponse(array(), 'success', '更新成功！', Url::action('LimitController@group'));
     }
 
     public function checkExistGroup($groupName)
@@ -273,7 +275,7 @@ class LimitController extends SystemController
     public function updateUser($id)
     {
         if (!isset($id) && $id) {
-            $this->ajaxResponse(array(), 'fail', '获取id失败');
+            $this->ajaxResponse(BaseController::$_FAILED_TEMPLATE);
         }
         $user = User::find($id);
         $userInfo = Input::all();
@@ -284,16 +286,11 @@ class LimitController extends SystemController
         $atu->group_id = $userInfo['group_id'];
         $atu->roles = (int)$userInfo['sa'] === 1 ? Limit::ROLE_SUPER : Limit::ROLE_NORMAL;
         if (!$user->save() || !$atu->save()) {
-            $this->ajaxResponse(array(), 'fail', '保存失败');
+            $this->ajaxResponse(BaseController::$_FAILED_TEMPLATE);
         }
-
-        $this->ajaxResponse(array(), 'success', '更新成功！' . $atu->group_id, Url::action('LimitController@user'));
+        $this->ajaxResponse(BaseController::$SUCCESS, BaseController::$MESSAGE_DO_SUCCESS, '', Url::action('LimitController@user'));
     }
 
-    public function test($id)
-    {
-        $this->ajaxResponse(array(), 'fail', 'failure' . $id);
-    }
 
     public function setAdmin($id)
     {
@@ -332,7 +329,8 @@ class LimitController extends SystemController
         $isSave = true;
         $group = Group::find($id);
         if ($group->groupName == 'admin') {
-            $this->ajaxResponse(array(), 'fail', '不可删除管理员组');
+            $this->ajaxResponse(BaseController::$_FAILED_TEMPLATE);
+//            $this->ajaxResponse(array(), 'fail', '不可删除管理员组');
         }
         if (Group::find($id)->delete()) {
             $models = GroupOperation::where('group_id', '=', $id)->get();
@@ -349,14 +347,13 @@ class LimitController extends SystemController
                     }
                 }
                 if ($isSave) {
-                    $this->ajaxResponse(array(), 'success', '删除成功！');
+                    $this->ajaxResponse(BaseController::$_SUCCESS_TEMPLATE);
                 } else {
-                    $this->ajaxResponse(array(), 'fail', '将用户中group_id保存为null失败' . $atus);
+                    $this->ajaxResponse(BaseController::$_FAILED_TEMPLATE);
                 }
             }
         }
-
-        $this->ajaxResponse(array(), 'fail', '删除失败！');
+        $this->ajaxResponse(BaseController::$_FAILED_TEMPLATE);
     }
 
 

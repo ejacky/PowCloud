@@ -1,45 +1,44 @@
-<div class="">
+<div class="" xmlns="http://www.w3.org/1999/html">
     <form id="pathForm" class="form-horizontal" method="post" onsubmit="return check_form(this)">
-        <div class="control-group">
-            <label for="name" class="control-label">path*:</label>
+        <div class="form-group">
+            <label for="name" class="control-label col-sm-3">path*:</label>
 
-            <div class="controls">
-                <input name="name" readonly class="input-medium" value="<?php echo $path->name; ?>" type="text"
+            <div class="controls col-sm-8">
+                <input name="name" readonly class="form-control" value="<?php echo $path->name; ?>" type="text"
                        placeholder="主机名称" id="name">
             </div>
         </div>
-        <?php if ((int)$path->id !== 0): ?>
-            <div class="control-group">
-                <label for="host" class="control-label">主机*:</label>
+        <!--        --><?php //if ((int)$path->id !== 0): ?>
+        <!--            <div class="control-group">-->
+        <!--                <label for="host" class="control-label">主机*:</label>-->
 
-                <div class="controls">
-                    <?php echo Form::select('host_id', Host::getHostList(), $path->host_id); ?>
-                </div>
-            </div>
-        <?php endif; ?>
-        <div class="control-group">
-            <label for="expire" class="control-label">缓存时间:</label>
+        <!--                <div class="controls">-->
+        <!--                    --><?php //echo Form::select('host_id', Host::getHostList(), $path->host_id); ?>
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        --><?php //endif; ?>
+        <div class="form-group">
+            <label for="expire" class="control-label col-sm-3">缓存时间:</label>
 
-            <div class="controls">
+            <div class="controls col-sm-8">
                 <input class="expire" name="expire" type="text" value="<?php echo $path->expire; ?>" placeholder="有效期"
                        id="expire">
             </div>
         </div>
-        <div class="form-actions">
-            <?php if ((int)$path->id !== 0): ?>
-                <!--                <button class="btn btn-primary" type="submit">更新</button>-->
-            <?php endif; ?>
-            <a class="btn" onclick="addChild();">创建子路径</a>
-            <a class='btn' onclick="update()">更新路径</a>
+        <div class="pow_btn_horiz">
+            <a class="btn btn-primary" onclick="addChild();">创建子路径</a>
+            <a class='btn btn-info' onclick="update()">更新路径</a>
             <!--            --><?php //if ((int)$path->id !== 0): ?>
             <!--                <a id="remove" class="btn" data-url="-->
-            <?php //echo URL::action('PathController@destroy',array('path'=>$path->id)); ?><!--" >删除路径</a>-->
+            <!--            -->
+            <?php //echo URL::action('PathController@destroy', array('path' => $path->id)); ?><!--">删除路径</a>-->
             <!--            --><?php //endif; ?>
         </div>
     </form>
 </div>
 
-<div id="JPathChildInfo" class="hide">
+<div id="JPathChildInfo" hidden="">
+    </br>
     <fieldset>
         <legend>创建<?php echo $path->name; ?>子路径</legend>
         <div id="JPathChild"></div>
@@ -53,7 +52,6 @@
             success: function (re) {
                 $('#JPathChildInfo').show();
                 $('#JPathChild').html(re);
-
             }
         });
 

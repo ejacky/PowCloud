@@ -12,30 +12,6 @@
 */
 
 
-Route::get('env', function () {
-
-    $ak = 'ApeZGJsGl3vfyGtP72Vkkcd5vpAgLZ6v8sw4iFw7';
-    $sk = '7Vbm-DeATjGB7Pmm1nyWXQWRwe8AI-nHDf60P8Iw';
-    $bk = 'bangshuiguo';
-    $client = Qiniu::create(array(
-        'access_key' => $ak,
-        'secret_key' => $sk,
-        'bucket'     => $bk
-    ));
-
-// 查看文件状态
-    $res = $client->stat('tumblr_liu1uqlDaZ1qci2flo1_1280.jpg');
-
-    return Response::json($res);
-//    $env = getenv('CMS_ENV') ? getenv('CMS_ENV') : null;
-//    return sprintf('nginx env: %s,app env: %s', $env, App::environment());
-});
-
-Route::get('route', function () {
-
-    return RouteManager::findController('/test');
-});
-
 Route::get('mail', function () {
     return Response::view('emails.info', array());
 });
@@ -50,8 +26,6 @@ Route::get('nginx', function () {
     return Route::dispatch($request)->getContent();
 });
 
-
-//Route::get('dashboard', 'DashBoardController@index');
 
 Route::resource('dashboard', 'DashBoardController');
 Route::resource('app', 'AppController');
@@ -68,13 +42,18 @@ Route::post('updateApp', 'DashBoardController@updateApp');
 //user message
 Route::any('user_message/invite', 'UserMessageController@invite');
 Route::any('user_message/receive', 'UserMessageController@receive');
+Route::get('user_message/forget', 'UserMessageController@viewForget');
+Route::post('user_message/forget', 'UserMessageController@forget');
+Route::get('user/info', 'UserMessageController@viewReset');
+Route::post('user_message/reset', 'UserMessageController@resetPassword');
+Route::any('user/resend', 'UserMessageController@reSendActiveMail');
 
 
 //login
 Route::get('register', 'LoginController@register');
 Route::get('logout', 'LoginController@logout');
 Route::get('login', 'LoginController@login');
-Route::post('login/loginStore', 'LoginController@loginStore');
+Route::any('login/loginStore', 'LoginController@loginStore');
 Route::post('login/registerUser', 'LoginController@registerUser');
 
 
@@ -97,6 +76,8 @@ Route::post('/forms/{form}/field/rank', 'FormsController@rank');
 Route::get('forms', 'FormsController@forms');
 Route::post('/form/storeField/{table}', 'FormsController@storeField');
 Route::get('/form/addField/{table}', 'FormsController@addField');
+Route::get('/form/addtiming/{table}', 'FormsController@addTiming');
+Route::get('/form/deltiming/{table}', 'FormsController@delTiming');
 Route::resource('/form', 'FormsController');
 
 //path
@@ -139,7 +120,6 @@ Route::post('cms/offline', 'CmsController@offline');
 
 Route::get('/page/{page}', 'CmsController@page');
 Route::post('/cache/refresh/{table}/{target}', 'CmsController@cacheRefresh');
-Route::any('test', 'CmsController@test');
 Route::post('/cms/{table}/{id}/restore', 'CmsController@restore');
 Route::get('/cms/{table}/{id}/detail', 'CmsController@detail');
 Route::resource('/cms', 'CmsController');

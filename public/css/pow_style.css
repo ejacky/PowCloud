@@ -1,0 +1,348 @@
+/*!
+ * Bootstrap v3.2.0 (http://getbootstrap.com)
+ * Copyright 2011-2014 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+.navbar-inverse .navbar-inner {
+    background: #393939;
+    filter: unquote("progid:DXImageTransform.Microsoft.gradient(enabled = false)");
+}
+
+.navbar-inverse .brand {
+    border-bottom: 2px solid #2c3e50;
+    border-right: 2px solid #2c3e50;
+    color: #ffffff;
+    padding: 10px 28px 11px 32px;
+}
+
+body {
+    padding-top: 49px;
+    color: #34495e;
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", "Segoe UI", "Microsoft Yahei", Tahoma, Arial, STHeiti, sans-serif;
+    font-size: 14px;
+    line-height: 1.231;
+
+}
+
+.w100p {
+    width: 100%;
+    overflow: hidden;
+}
+
+.middle {
+    margin: 0 auto;
+}
+
+.navbar-collapse {
+    width: 90%;
+}
+
+.pow_row {
+    width: 100%;
+    overflow: hidden;
+}
+
+li {
+    list-style: none;
+}
+
+.sidebar {
+    background: #393939;
+    color: #fff;
+}
+
+.pow_sidebar li a.hover {
+    color: #fff;
+}
+
+.pow_sidebar li a {
+    color: #fff;
+}
+
+.pow_sidebar li a:hover {
+    color: #d14836;
+    background: none;
+}
+
+.pow-brand {
+    float: left;
+    height: 50px;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+    color: #fff;
+}
+
+.pow-brand:hover {
+    color: #d14836;
+    text-decoration: none;
+}
+
+.nav-header {
+    color: #aeb2b7;
+    font-size: 16px;
+    display: block;
+    padding: 3px 15px;
+    line-height: 20px;
+    color: #999999;
+    text-align: center;
+    text-transform: uppercase;
+
+}
+
+.sidebar-nav {
+    background: #393939;
+    border-radius: 0px;
+}
+
+.sidebar-nav ul li.active a {
+    background: #d14836;
+}
+
+.nav-list li a {
+    color: #fff;
+    text-align: center;
+}
+
+.nav-list li a:hover {
+    color: #d14836;
+    background: none;
+}
+.nav-list li.active a:hover {
+
+    color:#fff;
+}
+.table_list_title {
+    margin: 15px 0 10px 0px;
+}
+
+.table_list_title legend {
+    padding-bottom: 10px;
+}
+
+.table tr {
+    padding: 10px 0;
+}
+
+.pow_main_nav li a {
+    color: #fff;
+}
+
+.pow_main_nav li a:hover {
+    color: #d14836;
+    background: none;
+}
+.pow_main_nav li.active a:hover{
+    color:#fff;
+}
+.nav {
+    line-height: 30px;
+}
+
+.item {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px -ms-border-radius : 4 px -o-border-radius : 4 px border-radius : 4 px;
+    border: 1px solid #ccc;
+}
+
+.item_a {
+    text-decoration: none;
+    color: #34495e;
+    display: block;
+
+}
+
+.item_a:hover{
+    color: #d14836;
+    text-decoration: none;
+    font-style: normal;
+}
+
+.pow_member {
+    padding: 0;
+
+}
+
+.pow_member li {
+    margin-right: 20px;
+}
+
+.pow_main_nav > li.active > a {
+    background-color: #d14836;
+}
+
+
+
+.sidebar-nav {
+    padding: 19px 0;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.pow_padding_left_20 {
+    padding-left: 20px;
+}
+
+/***
+Notes
+***/
+
+/* Common styles for all types */
+.note {
+    margin: 10px 0 20px 0;
+    padding: 15px 30px 15px 15px;
+    border-left: 5px solid #eee;
+}
+
+.note h1,
+.note h2,
+.note h3,
+.note h4 {
+    margin-top: 0;
+}
+
+.note p:last-child {
+    margin-bottom: 0;
+}
+
+.note code,
+.note .highlight {
+    background-color: #fff;
+}
+
+/* Variations */
+.note-danger {
+    background-color: #FAEAE6;
+    border-color: #ed4e2a;
+}
+
+.note-warning {
+    background-color: #FCF3E1;
+    border-color: #fcb322;
+}
+
+.note-info {
+    background-color: #E8F6FC;
+    border-color: #57b5e3;
+}
+
+.note-success {
+    background-color: #C9FFD2;
+    border-color: #3cc051;
+}
+
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+
+.bs-callout-info {
+    border-left-color: #5bc0de;
+}
+
+.pow_user_letter {
+    display: block;
+    width: 45px;
+    height: 45px;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+    border-radius: 25px;
+    background: #e7e7df;
+    color: #d14836;
+    font-size: 25px;
+    text-align: center;
+    line-height: 45px;
+    text-transform: capitalize;
+    margin: 0 auto;
+}
+
+.fl {
+    float: left;
+}
+
+.pow_ml100 {
+    margin-left: 100px;
+}
+
+.pow_margin_left30 {
+    margin-left: 30px;
+}
+
+.normal_padding {
+    padding: 30px 0;
+}
+
+.inline {
+    display: inline-block;
+    padding-top: 5px;
+    margin-bottom: 0;
+    vertical-align: middle;
+    padding-left: 32px;
+    padding-top: 10px;
+}
+
+.pow_modal {
+    width: 560px;
+    top: 10%;
+    left: 50%;
+    margin-left: -280px;
+    background-color: #fff;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    height: 460px;
+    overflow-y: hidden;
+}
+
+.pow_gap {
+    margin: 10px 0 0 180px;
+}
+
+
+.form-actions {
+    padding: 0 0 0 180px;
+    margin: 20px 0 20px 0;
+}
+
+.pow_item_gap {
+    margin: 20px 0 0 0;
+}
+.form_field{
+    margin-top:30px;
+}
+legend{
+    line-height: 40px;
+}
+
+input[type="file"]{
+    margin:5px 0 0 10px;
+}
+.controls select{
+    margin:5px 0 0 10px;
+}
+.pow_btn_horiz{
+    margin-left:176px;
+}
+.pow_label{
+    padding:.2em .2em .3em;
+}
+.pow_item_title{
+    background: #3071a9;
+    display: block;
+    color:#fff;
+    padding:0 10px;
+}
+.pow_item_title:hover{
+    text-decoration: none;
+    font-style: normal;
+    color:#fff;
+    background:#285e8e;
+}
+
+
+

@@ -38,20 +38,24 @@ class pathDaemon extends Command
      */
     public function fire()
     {
-        $app_id = $this->option('app');
-        if (!$app_id) {
-            $this->info('missing app params');
-            return;
-        }
+        $ids = AppModel::all(array('id'))->lists('id');
+        foreach ($ids as $id) {
+            \Utils\AppChose::updateConf($id);
+            try{
 
-        \Utils\AppChose::updateConf($app_id);
-        $tables = SchemaBuilder::all();
-        foreach ($tables as $table) {
-            $this->info($table->table_name);
-            $this->info($table->path['name']);
-            $path = $table->path;
-            RouteManager::addRouteWithRestFul($path['name'], $table->table_name, $path['expire'], array('index'  => (int)$table->index, 'store' => (int)$table->create,
-                                                                                                        'update' => (int)$table->update, 'delete' => (int)$table->delete));
+                DB::reconnect();
+            }
+            catch (Exception $e) {
+                continue;
+            }
+            $tables = SchemaBuilder::all();
+            foreach ($tables as $table) {
+                $this->info(sprintf('## %s, table_name: %s, path: %s',$id,$table->table_name,$table->path['name']));
+                $path = $table->path;
+                RouteManager::addRouteWithRestFul($path['name'], $table->table_name, $path['expire'],array('index'  => (int)$table->index, 'store' => (int)$table->create,
+                                                                                                                           'update' => (int)$table->update, 'delete' => (int)$table->delete));
+            }
+
         }
 
 

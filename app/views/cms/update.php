@@ -1,8 +1,9 @@
 <?php echo $header; ?>
 <?php echo \Utils\FormBuilderHelper::begin($table->table_name); ?>
     <form id="cms_form" class="form-horizontal" onsubmit="">
-        <fieldset>
-            <legend>更新数据 ：#<?php echo $tableData->id ?></legend>
+        <fieldset class="">
+
+            <legend>更新数据:#<?php echo $tableData->id ?></legend>
             <?php foreach ($forms as $form): ?>
             <?php if ((int)$form->visibleByGroup !== 0 && (int)$form->visibleByGroup !== (int)Auth::user()->group_id) {
                 echo \Utils\FormBuilderHelper::hidden($form, $tableData->{$form->field});
@@ -13,10 +14,10 @@
                 continue;
             } ?>
             <?php if ($form->type == 'timingState') { ?>
-            <div class="control-group timing-radio">
+            <div class="form-group timing-radio">
                 <label for="name" class="control-label" style="display:none"><?php echo $form->label ?>:</label>
 
-                <div class="controls">
+                <div class="controls pow_gap">
                     <?php
                     echo \Utils\FormBuilderHelper::timingState($form, $tableData->timing_state, $tableData);
                     echo "</div>";
@@ -26,14 +27,14 @@
                     <?php if ($form->type == 'image' && $form->default_value): ?>
                         <?php $del_val_array = array_filter(explode(',', $form->default_value)) ?>
                         <?php foreach ($del_val_array as $key => $val): ?>
-                            <div class="control-group">
-                                <label for="name" class="control-label"><?php echo $val ?>:</label>
+                            <div class="form-group">
+                                <label for="name" class="control-label col-sm-3"><?php echo $val ?>:</label>
 
-                                <div class="controls">
+                                <div class="controls col-md-5">
                                     <?php
                                     \Utils\FormBuilderHelper::registerValidateRules($form->field, $form->rules); //注册验证规则 以便JS可以验证
                                     $namespace = $table->table_name ? $table->table_name . '[' . $form->field . ']' : $form->field;
-                                    $class = 'input-xxlarge';
+                                    $class = 'form-control';
                                     $input = '<input type="text" name="' . $namespace . '[]" placeholder="单击上传" value="' . (isset($tableData->{$form->field}[$key]) ? $tableData->{$form->field}[$key] : '') . '"  class="' . $class . ' image-uploader"  />';
                                     echo $input;
                                     ?>
@@ -41,10 +42,10 @@
                             </div>
                         <?php endforeach; ?>
                     <?php elseif ($form->field === 'timing_time'): ?>
-                        <div class="control-group">
-                            <label for="name" class="control-label"><?php echo $form->label ?>:</label>
+                        <div class="form-group">
+                            <label for="name" class="control-label col-sm-3"><?php echo $form->label ?>:</label>
 
-                            <div class="controls">
+                            <div class="controls col-md-6 form-inline">
                                 <?php
                                 \Utils\FormBuilderHelper::registerValidateRules($form->field, $form->rules); //注册验证规则 以便JS可以验证
                                 $time = '';
@@ -56,10 +57,10 @@
                             </div>
                         </div>
                     <?php elseif (!in_array($form->field, $hide) && $form->type !== 'formTip'): ?>
-                        <div class="control-group">
-                            <label for="name" class="control-label"><?php echo $form->label ?>:</label>
+                        <div class="form-group">
+                            <label for="name" class="control-label col-sm-3"><?php echo $form->label ?>:</label>
 
-                            <div class="controls">
+                            <div class="controls col-md-5">
                                 <?php
                                 \Utils\FormBuilderHelper::registerValidateRules($form->field, $form->rules); //注册验证规则 以便JS可以验证
                                 echo call_user_func_array(array('\Utils\FormBuilderHelper', $form->type), array($form, $tableData->{$form->field}));
@@ -121,17 +122,19 @@
                                 <td>
                                     <a href="javascript:void(0);"
                                        data-table="<?php echo $children_relation['table']->table_name; ?>" title="上升"
-                                       class="tr_rank" data-direction="up"><i class="icon-chevron-up"></i></a>
+                                       class="tr_rank" data-direction="up"><i
+                                            class="glyphicon glyphicon-chevron-up"></i></a>
                                     <a href="javascript:void(0);"
                                        data-table="<?php echo $children_relation['table']->table_name; ?>" title="下降"
-                                       class="tr_rank" data-direction="down"><i class="icon-chevron-down"></i></a>
+                                       class="tr_rank" data-direction="down"><i
+                                            class="glyphicon glyphicon-chevron-down"></i></a>
                                     <a href="javascript:void (0);"
                                        data-table="<?php echo $children_relation['table']->table_name; ?>"
-                                       class="tr_remove"><i class="icon-remove"></i></a>
+                                       class="tr_remove"><i class="glyphicon glyphicon-remove"></i></a>
                                     <a href="javascript:void (0);"
                                        data-table="<?php echo $children_relation['table']->table_name; ?>"
                                        class="tr_add"><i
-                                            class="icon-plus"></i></a>
+                                            class="glyphicon glyphicon-plus"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -142,15 +145,12 @@
         <?php endif; ?>
 
 
-
-
-
-
-        <div class="form-actions">
+        <div class="form-actions pow_ml100">
             <?php if (isset($options[$table->id]) && $options[$table->id]['edit'] == 2): ?>
                 <button class="btn btn-primary" type="submit" id="JS_Sub">更新</button>
             <?php endif ?>
-            <a href="<?php echo URL::action('CmsController@index', array('id' => $table->id)) ?>" class="btn"
+            <a href="<?php echo URL::action('CmsController@index', array('id' => $table->id)) ?>"
+               class="btn btn-warning"
                onclick="">取消</a>
         </div>
     </form>
@@ -165,14 +165,59 @@
                     $('#JS_Sub').attr('disabled', true);
                 },
                 success: function (re) {
+                    console.log("re", re)
                     re = $.parseJSON(re);
-                    if (re.status == 'fail') {
-                        alert(re.message);
+                    if (re.status) {
+                        var errors = re.data;
+                        if (!errors) {
+                            errors = re.message
+                        }
+                        if (errors) {
+                            try {
+                                errors = JSON.parse(this.responseText);
+                                console.log("json")
+                            }
+                            catch (e) {
+                                console.log("not json")
+                            }
+                            $('#alerts').on('closed.bs.alert', function () {
+                                if (re.redirect) {
+                                    location.href = re.redirect;
+                                }
+
+                            })
+                            if ($('#alerts').length > 0) {
+                                setTimeout(function () {
+                                    if (re.redirect) {
+                                        location.href = re.redirect;
+                                    }
+                                }, 3000);
+                                if (re.status == 1) {
+                                    $("#alerts").attr('class', "alert alert-dismissible  alert-success");
+                                }
+                                else {
+                                    $("#alerts").attr('class', "alert alert-dismissible  alert-danger");
+                                }
+                                $("#alert_title").html(re.message);
+                                $("#alert_content").html(re.data);
+                                $("#alerts").fadeTo(4000, 500).slideUp(500, function () {
+                                    $("#alerts").alert();
+                                });
+                            }
+                            else {
+                                alert(errors);
+                            }
+                        }
                         $('#JS_Sub').attr('disabled', false);
-                        return false;
                     }
-                    alert('更新数据成功');
-                    location.href = re.successRedirect;
+                    if (re.redirect) {
+                        if ($('#alerts').length <= 0) {
+                            if (re.redirect) {
+                                location.href = re.redirect;
+                            }
+                        }
+
+                    }
                 }
             }).complete(function () {
                     $('#JS_Sub').attr('disabled', false);

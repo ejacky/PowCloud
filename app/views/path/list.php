@@ -142,23 +142,23 @@
         $(document).ready(function () {
             $.fn.zTree.init($("#pathList"), setting, zNodes);
             $("#addParent").bind("click", {isParent: true}, add);
-            $("#addLeaf").live("click", {isParent: false}, add);
+            $("body").on("click", "#addLeaf", {isParent: false}, add);
             $("#edit").bind("click", edit);
-            $("#remove").live("click", remove);
+            $("body").on("click", "#remove", remove);
             $("#clearChildren").bind("click", clearChildren);
         });
         //-->
     </SCRIPT>
 
-    <div class="span3">
+    <div class="col-md-3">
         <fieldset>
-            <legend>Path列表</legend>
+            <legend>API 列表</legend>
             <ul id="pathList" class="ztree pathList"></ul>
         </fieldset>
     </div>
-    <div class="span4">
+    <div class="col-md-8">
         <fieldset>
-            <legend>路径信息</legend>
+            <legend>API信息</legend>
             <blockquote>
                 <div class="info">
                     <p>点击左边节点查看相应路径信息</p>

@@ -37,7 +37,7 @@ class FormBuilderHelper
                 },
                 success:function(label){
                     label.parent().parent().removeClass('error').addClass('success');
-                    label.html('<i class="icon-ok"></i>');
+                    label.html('<i class="glyphicon glyphicon-ok"></i>');
                 }
             });
             var {$formId}Validate = $("#{$formId}").validate({
@@ -88,11 +88,11 @@ EOT;
         return self::$namespace ? self::$namespace . '[' . $field . ']' : $field;
     }
 
-    public static function text($form, $value = '', $class = "")
+    public static function text($form, $value = '', $class = "form-control")
     {
         $value = is_array($value) ? json_encode($value) : $value;
 
-        $class = $form->dataType == 'Integer' ? ' input-mini' : '';
+//        $class = $form->dataType == 'Integer' ? ' input-mini' : '';
 
         $name = self::getFieldName($form->field);
 
@@ -167,7 +167,7 @@ EOT;
         return $js . $input . $label;
     }
 
-    public static function textArea($form, $value = '', $class = "input-large")
+    public static function textArea($form, $value = '', $class = "form-control")
     {
         $value = is_array($value) ? json_encode($value) : $value;
         $name = self::getFieldName($form->field);
@@ -183,7 +183,7 @@ EOT;
         );
     }
 
-    public static function image($form, $value = '', $class = "input-xxlarge")
+    public static function image($form, $value = '', $class = "form-control")
     {
         $value = $value ? $value : $form->default_value;
         $input = '';
@@ -191,11 +191,11 @@ EOT;
             return self::imageArray($form, $value, $class);
         } else {
 
-            return '<input type="text" name="' . self::getFieldName($form->field) . '" placeholder="有效图片地址" value="' . $value . '"  class="' . $class . ' image-uploader" data-validate="' . $form->field . '" />';
+            return '<input class="form-control"  type="text" name="' . self::getFieldName($form->field) . '" placeholder="有效图片地址" value="' . $value . '"  class="' . $class . ' image-uploader" data-validate="' . $form->field . '" />';
         }
     }
 
-    public static function imageArray($form, $value, $class = "input-xxlarge")
+    public static function imageArray($form, $value, $class = "form-control")
     {
         $input = '';
         if ($value && is_array($value)) {
@@ -205,8 +205,8 @@ EOT;
         } else
             $input = '<input type="text" name="' . self::getFieldName($form->field) . '[]" placeholder="有效图片地址" value="' . $value . '"  class="' . $class . ' image-uploader"  />';
 
-        $js_link = '<a class="JS_repeat" title="继续添加" href="javascript:void(0) "><i class="icon-plus"></i></a>';
-        $js_remove = '<a class="JS_remove" title="继续添加" href="javascript:void(0) "><i class="icon-remove"></i></a>';
+        $js_link = '<a class="JS_repeat" title="继续添加" href="javascript:void(0) "><i class="glyphicon glyphicon-plus"></i></a>';
+        $js_remove = '<a class="JS_remove" title="继续添加" href="javascript:void(0) "><i class="glyphicon glyphicon-remove"></i></a>';
         $js = " <script>
         $(function(){
             $('.JS_repeat').click(function(){
@@ -273,7 +273,7 @@ EOT;
                 },
                 success:function(label){
                     label.parent().parent().removeClass('error').addClass('success');
-                    label.html('<i class="icon-ok"></i>');
+                    label.html('<i class="glyphicon glyphicon-ok"></i>');
                 }
             });
             {$method}
@@ -285,7 +285,6 @@ EOT;
                         data : $(form).serialize(),
                         type : '{$requestMethod}',
                         beforeSend : function(){
-
                             var bs = '{$beforeSend}'?(typeof({$beforeSend})=='function'?true:false):false;
                             if(bs){
                                return {$beforeSend};
@@ -293,16 +292,65 @@ EOT;
                             $('#JS_Sub').attr('disabled',true);
                         },
                         success: function(re){
+                            console.log("re",re)
                             re = $.parseJSON(re);
-                            if(re.status =='fail'){
-                                var errors = re.data;
-//                                validate.showErrors(errors);
-                                alert(re.message);
+                            if(re.status){
+                                 var errors = re.data;
+                                 if(!errors){
+                                     errors = re.message
+                                 }
+                                 if(errors){
+                                try
+                                    {
+                                       errors = JSON.parse(this.responseText);
+                                       console.log("json")
+                                    }
+                                    catch(e)
+                                    {
+                                        console.log("not json")
+                                    }
+                                     $('#alerts').on('closed.bs.alert', function () {
+                                         if(re.redirect){
+                                            location.href = re.redirect;
+                                         }
+
+                                     })
+                                    if($('#alerts').length >0 ){
+                                         setTimeout(function(){
+                                           if(re.redirect){
+                                                location.href = re.redirect;
+                                            }
+                                         }, 3000);
+
+                                        if(re.status == 1){
+                                            $("#alerts").attr('class',"alert alert-dismissible  alert-success");
+                                        }
+                                        else{
+                                             $("#alerts").attr('class',"alert alert-dismissible  alert-danger");
+                                        }
+
+
+                                        $("#alert_title").html(re.message);
+                                        $("#alert_content").html(re.data);
+                                        $("#alerts").fadeTo(4000, 500).slideUp(500, function(){
+                                                $("#alerts").alert();
+                                            });
+                                    }
+                                    else{
+                                        alert(errors);
+                                    }
+                                }
                                 $('#JS_Sub').attr('disabled',false);
-                                return false;
                             }
-                            alert(re.message);
-                            location.href = re.successRedirect;
+                            if(re.redirect){
+                              if($('#alerts').length <=0 ){
+                                 if(re.redirect){
+                                    location.href = re.redirect;
+                                 }
+                              }
+
+                            }
+
                         }
                     });
                     return false;
@@ -364,8 +412,8 @@ EOT;
                 $(".selectColor li").click(function(){
                     var value = $(this).attr('data-value');
                     var target = $(this).attr('data-target');
-                    $(".selectColor li .icon-ok").addClass('hide');
-                    $('.icon-ok',$(this)).removeClass('hide');
+                    $(".selectColor li .glyphicon glyphicon-ok").addClass('hide');
+                    $('.glyphicon glyphicon-ok',$(this)).removeClass('hide');
                     $("#"+target).val(value);
                 });
             });
@@ -379,7 +427,7 @@ EOT;
         if ($form->default_value) {
             if ($colors = explode(',', $form->default_value)) {
                 foreach ($colors as $index => $color) {
-                    $colorSelect .= '<li data-target="' . $id . '" data-value="' . $index . '" style="' . ($color == '无' ? '' : 'background:' . $color . ';') . '"><i class="icon-ok ' . ((int)$value === (int)$index ? '' : ' hide') . '"></i>' . ($color == '无' ? '无' : '') . '</li>' . "\n";
+                    $colorSelect .= '<li data-target="' . $id . '" data-value="' . $index . '" style="' . ($color == '无' ? '' : 'background:' . $color . ';') . ';"><i class="glyphicon glyphicon-ok ' . ((int)$value === (int)$index ? '' : ' hide') . '"></i>' . ($color == '无' ? '无' : '') . '</li>' . "\n";
                 }
             }
         }
@@ -416,6 +464,7 @@ EOT;
 
         $css = '<link href="' . \URL::asset('css/datetimepicker.css') . '" rel="stylesheet">';
         $js = '<script src="' . \URL::asset('js/bootstrap-datetimepicker.min.js') . '"></script>';
+
         $timingTime = self::getFieldName('timing_time');
         $timingStatus = $timing_state = self::getFieldName('timing_state');
         $checkScript = '';
@@ -431,6 +480,7 @@ CHECKSCRIPT;
         $script = <<<EOT
 <script type="text/javascript">
     $('#JSCheckEnable').click(function(){
+       console.log("checked: ",this.checked);
         if(this.checked){
             $('input[name="{$timingTime}[start]"],#start_hour,#start_minute').attr("disabled",false);
             $('.timing-radio').css("display",'block');
@@ -441,14 +491,13 @@ CHECKSCRIPT;
                 minuteStep:1,
                 autoclose:true,
                 minView:1,
+                todayBtn: true,
                 startDate: "{$startTime}",
             }).on('change', function () {
                 $('input[name="{$timingTime}[start]"],#start_hour,#start_minute').attr("disabled",false);
                 $('input[name="{$timingStatus}"]').attr('checked','checked');
-                $('#JSCheckEnable').attr('checked','checked');
-                $("#JSCheckEnable").trigger('click');
-                $('#JSCheckEnable').attr('checked','checked');
 
+                $('#JSCheckEnable').prop('checked','true');
                 var dt = new Date();
                 var month = ('0'+(dt.getMonth() + 1)).slice(-2);
                 var day = dt.getDate();
@@ -465,6 +514,7 @@ CHECKSCRIPT;
         else{
             $('input[name="{$timingTime}[start]"],#start_hour,#start_minute').attr("disabled","disabled");
             $('.timing-radio').css("display",'none');
+
         }
 
     });
@@ -472,13 +522,17 @@ CHECKSCRIPT;
 </script>
 EOT;
 
-        $dataPicker = '<div class="input-append date form_datetime" id="start_date">
-        <input size="16" type="text" name="' . $timingTime . '[start]" value="' . $start . '" disabled="disabled">
-        <span class="add-on"><i class="icon-calendar"></i></span></div>&nbsp;&nbsp;
-        <input style="width: 50px;" size="2" id="start_hour" type="text" name="' . $timingTime . '[hour]" value="' . $hour . '" disabled="disabled">时
-        &nbsp;&nbsp;<input style="width: 50px;" size="2" id="start_minute" type="text" name="' . $timingTime . '[minute]" value="' . $minute . '" disabled="disabled">
+
+        $dataPicker = sprintf('<div class="input-group date form_datetime  col-md-5" id="start_date" >
+        <input size="16" class="form-control" type="text" name="%s[start]" value="%s" disabled="disabled">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+        </div>
+        <input  class="form-control" size="2" id="start_hour" type="text" name="%s[hour]" value="%s" disabled="disabled">时
+
+        <input  class="form-control"  style="width: 50px;"   size="2" id="start_minute" type="text" name="%s[minute]" value="%s" disabled="disabled">
         分<input type="checkbox" id="JSCheckEnable"  value=1> <span class="help-inline"> 启用</span>&nbsp;&nbsp;选填
-        ';
+        ', $timingTime, $start, $timingTime, $hour, $timingTime, $minute);
+
         return $css . "\n" . $js . "\n" . $dataPicker . "\n" . $script . $checkScript;
 
     }
@@ -491,7 +545,12 @@ EOT;
         <label class="inline radio"><input type="radio" name="' . self::getFieldName($form->field) . '" id="optionsRadios2" value="6" data-toggle="radio" ' . (($value == 6) ? 'checked' : '') . '>置顶</label>
         </div>';
 
-        $js = '<script>$(function () {var checked_val; checked_val = $("div.timing-radio input[type=radio]:checked").val(); if (checked_val) {$(".timing-radio").css("display","block");$("#JSCheckEnable").prop("disabled", true);$("div.timing-radio input[type=radio]").each(function () {$(this).prop("disabled", true)});}})</script>';
+        $js = '<script>$(function () {var checked_val;
+        checked_val = $("div.timing-radio input[type=radio]:checked").val();
+         if (checked_val) {$(".timing-radio").css("display","block");
+         $("#JSCheckEnable").prop("disabled", true);
+         $("div.timing-radio input[type=radio]").each(function () {$(this).prop("disabled", true)})
+         ;}})</script>';
 
         return $timingState . $js;
 

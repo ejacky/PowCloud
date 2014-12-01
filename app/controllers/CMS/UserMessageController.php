@@ -17,44 +17,123 @@ class UserMessageController extends BaseController
         $from_id = $this->getCurrentUserID();
 
         if ($action !== UserMessage::ACTION_REMOVE && $action !== UserMessage::ACTION_INVITE) {
-            $this->ajaxResponse(array('name' => 'test'), 'fail', '请求解析有误,请联系官方人员');
+            //not support action
+            $this->ajaxResponse(BaseController::$_FAILED_TEMPLATE);
         }
-        $user_id = Input::get('user_id');
         if ($action === UserMessage::ACTION_REMOVE && $user_id = Input::get('user_id')) {
-            $result = UserMessage::processMessageByMail($from_id, $app_id, $email, $action);
+            //todo  notification not support ,so no need create message
+            ATURelationModel::where('user_id', $user_id)->where('aap_id', $app_id)->delete();
+            $result = true;
         } else {
+            //invite
             if (empty($email)) {
-                $this->ajaxResponse('', 'fail', '请输入邮箱地址');
+                $this->ajaxResponse(BaseController::$_FAILED_TEMPLATE);
             }
             $result = UserMessage::processMessageByMail($from_id, $app_id, $email, $action);
         }
         if ($result !== true) {
-            $this->ajaxResponse('', 'fail', $result);
+            $this->ajaxResponse(BaseController::$FAILED, $result);
         }
-        $this->ajaxResponse(array(), 'success', '邀请发送成功,等待回应中', 'DashBoardController@index');
+        $this->ajaxResponse(BaseController::$SUCCESS, BaseController::$MESSAGE_DO_SUCCESS, '', URL::action('DashBoardController@index'));
     }
 
     public function receive()
     {
-        $sed = Input::get('sed');
-        if (empty($sed)) {
-            return 'error';
-        }
-        $sed = urldecode($sed);
-        $message_id = substr($sed, -1);
-        $timespan = \Utils\UseHelper::checkToken(substr($sed, 0, -1), \Utils\UseHelper::$default_key);
 
-        $current = time();
-        $value = $current - $timespan;
-        if ($current - $timespan > 60 * 1500) {
-            return sprintf('time out %s,timespan: %s,and miss: %s', $current, $timespan, $value);
+        $sed = Input::get('sed');
+        $user_message = UserMessage::checkSed($sed);
+        if (gettype($user_message) == 'object') {
+            if ($user_message->action_type == UserMessage::ACTION_INVITE) {
+                header('Location:' . URL::action('LoginController@register', array('msg_id' => $user_message->id, 'email' => $user_message->mail_address)));
+            } elseif ($user_message->action_type == UserMessage::ACTION_ACTIVE) {
+                $user = User::find($user_message->user_from);
+                if ($user) {
+                    $user->status = User::ENABLE;
+                    $user->save();
+                    return $this->location(1, '激活成功,欢迎少侠到来');
+                }
+            }
+
         }
-        $user_message = UserMessage::find($message_id);
-        if (!$user_message->exists) {
-            return 'invite not exists';
+        return $this->location(-1, $user_message);
+    }
+
+    public function reSendActiveMail()
+    {
+        if (!$user = Auth::user()) {
+            return $this->location(-1, '请先登录!');
         }
-        //todo location to register and auto add to the app
-        header('Location:' . URL::action('LoginController@register', array('msg_id' => $message_id, 'email' => $user_message->mail_address)));
+        UserMessage::buildActiveEmail($user->id, $user->email);
+        $this->ajaxResponse(BaseController::$SUCCESS, '邮件发送成功,稍后请检查邮箱,若长时间没有收到,请查看垃圾箱!','','index');
+    }
+
+    public function viewForget()
+    {
+
+        return $this->render('user.forget');
+    }
+
+    public function viewReset()
+    {
+        $sed = Input::get('sed');
+        $params = array();
+        if ($sed) {
+            $user_message = UserMessage::checkSed($sed);
+            if ($user_message->action_type == UserMessage::ACTION_FORGET_PASSWORD) {
+                $params['action'] = UserMessage::ACTION_FORGET_PASSWORD;
+                $params['msg_id'] = $user_message->id;
+                $params['user_id'] = $user_message->user_from;
+            }
+        } else if (!Auth::check()) {
+            return $this->location(-1, '请先登录!');
+        }
+        $params['status'] = Auth::user()->status;
+        return $this->render('user.reset', $params);
+    }
+
+    public function forget()
+    {
+        $email = Input::get('email');
+        $user = User::checkExistsByMail($email);
+        if (!$user) {
+            $this->ajaxResponse(BaseController::$FAILED, '找不到用户!');
+        }
+        $msg_id = UserMessage::buildMsg($user->id, -1, -1, $email, UserMessage::ACTION_FORGET_PASSWORD);
+        $url = UserMessage::buildSedUrl(URL::action('UserMessageController@viewReset'), $email, $msg_id);
+        UserMessage::sendMail($url, $email);
+        \Utils\CMSLog::debug($url);
+        $this->ajaxResponse(BaseController::$SUCCESS, '邮件发送成功,稍后请检查邮箱,若长时间没有收到,请查看垃圾箱!');
+    }
+
+    public function resetPassword()
+    {
+        $msg_id = Input::get('msg_id');
+        $pwd = sha1(Input::get('new_pwd'));
+        $old_pwd = sha1(Input::get('old_pwd'));
+
+        if ($msg_id) {
+            $user_message = UserMessage::find($msg_id);
+            if ($user_message && $user_message->action_type == UserMessage::ACTION_FORGET_PASSWORD) {
+                if ($user = User::find($user_message->user_from)) {
+                    $user->pwd = $pwd;
+                    $user->save();
+                    $this->ajaxResponse(BaseController::$SUCCESS, '修改成功,请重新登陆,请妥善保管您的密码', '', URL::action('DashBoardController@index'));
+                }
+                $this->ajaxResponse(BaseController::$FAILED, BaseController::$MESSAGE_NOT_EXISTS);
+            }
+        }
+
+        if ($user = Auth::user()) {
+            if ($user->pwd != $old_pwd) {
+                $this->ajaxResponse(BaseController::$FAILED, '旧密码错误');
+            }
+            $user->pwd = $pwd;
+            $user->save();
+            LoginController::logout();
+            $this->ajaxResponse(BaseController::$SUCCESS, '修改成功,请重新登陆,请妥善保管您的密码', '', URL::action('DashBoardController@index'));
+        }
+        return $this->location(-1, '请先登录!');
+
     }
 
     public function index()

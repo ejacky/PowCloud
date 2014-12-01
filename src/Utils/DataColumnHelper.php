@@ -7,15 +7,6 @@ class DataColumnHelper
         FormBuilderHelper::$namespace = $namespace;
     }
 
-    public static function text($format = '', $dataType, $value = '')
-    {
-        if ($format === 'form')
-            return FormBuilderHelper::text($dataType, $value, 'input-medium');
-        if (is_array($value))
-            return json_encode($value);
-        return $value;
-    }
-
     public static function select($format = '', $dataType, $value = '', $selectOptions = array())
     {
         if ($format === 'form')
@@ -33,6 +24,7 @@ class DataColumnHelper
     {
         if ($format === 'form')
             return FormBuilderHelper::textQuick($dataType, $value, 'input-medium');
+
         return $value;
     }
 
@@ -79,7 +71,7 @@ class DataColumnHelper
     public static function rank($dataType, $value, $target = '', $data)
     {
 
-        $str = '<a data-direction="top" data-url="' . \URL::action('ExtController@top') . '" data-rank="' . $data->rank . '" data-id="' . $value . '" data-row="' . $target . '" class="JS_top" title="置顶" href="javascript:void(0);"><i class="icon-fire"></i></a>';
+        $str = '<a data-direction="top" data-url="' . \URL::action('ExtController@top') . '" data-rank="' . $data->rank . '" data-id="' . $value . '" data-row="' . $target . '" class="JS_top" title="置顶" href="javascript:void(0);"><i class="glyphicon glyphicon-fire"></i></a>';
         return $str;
     }
 
@@ -92,6 +84,21 @@ class DataColumnHelper
         return self::text($format, $dataType, $value);
     }
 
+    public static function text($format = '', $dataType, $value = '')
+    {
+        if ($format === 'form')
+            return FormBuilderHelper::text($dataType, $value, 'input-medium');
+
+
+        if (is_array($value))
+            $value = json_encode($value);
+
+        if(mb_strlen($value) > 50){
+            return substr($value, 0, 50).'...';
+        }
+        return $value;
+    }
+
     public static function areaFilter($format = '', $dataType, $value = '')
     {
         if ($format === 'form') {
@@ -101,7 +108,7 @@ class DataColumnHelper
             $requestUrl = \URL::action('ExtController@areaList');
             if ($value && strpos($value, 'type=0') === false)
                 $flag = '有';
-            $filed = $flag . '<a data-namespace="' . FormBuilderHelper::$namespace . '" data-url="' . $requestUrl . '" data-value="' . $value . '" class="area_filter_tr" href="javascript:void(0)"><i class=" icon-th-list"></i></a>';
+            $filed = $flag . '<a data-namespace="' . FormBuilderHelper::$namespace . '" data-url="' . $requestUrl . '" data-value="' . $value . '" class="area_filter_tr" href="javascript:void(0)"><i class=" glyphicon glyphicon-th-list"></i></a>';
             return $filed;
         }
 

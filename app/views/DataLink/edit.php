@@ -17,24 +17,25 @@
                     </p>
                 </div>
                 <legend>变更链接设置</legend>
-                <div class="control-group">
-                    <label for="name" class="control-label">主数据:</label>
+                <div class="form-group">
+                    <label for="name" class="control-label col-sm-2">主数据:</label>
 
-                    <div class="controls">
-                        <input name="data_info" class="input-medium" type="text" placeholder="数据变更" id="filed" readonly
+                    <div class="controls col-sm-6">
+                        <input name="data_info" class="form-control" type="text" placeholder="数据变更" id="filed" readonly
                                value="<?php echo $data_link->table_name . '.' . $data_link->data_id ?>">
                     </div>
                 </div>
-                <div class="control-group">
-                    <label for="name" class="control-label">添加链接数据:</label>
+                <div class="form-group">
+                    <label for="name" class="control-label col-sm-2">添加链接数据:</label>
 
-                    <div class="controls">
-                        <input class="input-large" id="add_itmes" type="text" placeholder="table_name:data_id">
-                        <a class="btn btn-info" onclick="addItmes()">add </a>
+                    <div class="controls col-sm-6">
+                        <input class="form-control " id="add_itmes" type="text" placeholder="table_name:data_id">
+
                     </div>
+                    <a class="btn btn-info" onclick="addItmes()">add </a>
                 </div>
 
-                <div class="control-group" id='items'>
+                <div class="form-group" id='items'>
                     <?php foreach ($items as $item): ?>
                         <div class="dropdown  ">
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu"
@@ -66,7 +67,7 @@
 
                 <div class="form-actions">
                     <button class="btn btn-primary" id="JS_Sub" type="submit">保存</button>
-                    <a class="btn" onclick="history.back()">取消</a>
+                    <a class="btn  btn-warning" onclick="history.back()">取消</a>
                 </div>
             </fieldset>
         </form>
@@ -107,9 +108,7 @@
                         }
                     }
                 }).done(function () {
-                        console.log('done');
                     }).fail(function (result) {
-                        console.log('fail');
                         alert(result);
                     });
                 return false;
@@ -124,7 +123,6 @@
 
             function deleteItem(item) {
                 var delete_id = $(item).attr('data-value');
-                console.log("closed");
                 $.ajax({
                     type: "POST",
                     url: "<?php echo  URL::action('DataLinkController@deleteItem')  ?>",

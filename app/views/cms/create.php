@@ -21,10 +21,10 @@
                 } ?>
 
                 <?php if ($form->type == 'timingState') { ?>
-                <div class="control-group timing-radio">
+                <div class="form-group timing-radio">
                     <label for="name" class="control-label" style="display:none"><?php echo $form->label ?>:</label>
 
-                    <div class="controls">
+                    <div class="controls pow_gap">
                         <?php
                         echo \Utils\FormBuilderHelper::timingState($form);
                         echo "</div>";
@@ -38,16 +38,16 @@
                             $label_val = array_filter(explode(',', $form->default_value));
                             ?>
                             <?php foreach ($label_val as $sub): ?>
-                                <div class="control-group">
-                                    <label for="name" class="control-label"><?php echo $sub ?>:</label>
+                                <div class="form-group">
+                                    <label for="name" class="control-label col-sm-3"><?php echo $sub ?>:</label>
 
-                                    <div class="controls">
+                                    <div class="controls col-sm-5">
                                         <?php
                                         if ($form->rules)
                                             \Utils\FormBuilderHelper::registerValidateRules($form->field, $form->rules);
                                         //注册验证规则 以便JS可以验证
                                         $namespace = $table->table_name ? $table->table_name . '[' . $form->field . ']' : $form->field;
-                                        $class = 'input-xxlarge';
+                                        $class = 'form-control';
                                         $input = '<input type="text" name="' . $namespace . '[]" placeholder="单击上传" value=""  class="' . $class . ' image-uploader"  />';
                                         echo $input;
                                         ?>
@@ -55,10 +55,10 @@
                                 </div>
                             <?php endforeach; ?>
                         <?php elseif ($form->field && $form->type !== 'formTip') : ?>
-                            <div class="control-group">
-                                <label for="name" class="control-label"><?php echo $form->label ?>:</label>
+                            <div class="form-group">
+                                <label for="name" class="control-label col-sm-3"><?php echo $form->label ?>:</label>
 
-                                <div class="controls">
+                                <div class="controls col-md-6 form-inline">
                                     <?php
                                     if ($form->rules)
                                         Utils\FormBuilderHelper::registerValidateRules($form->field, $form->rules);
@@ -108,17 +108,19 @@
                                         <a href="javascript:void(0);"
                                            data-table="<?php echo $children_relation['table']->table_name; ?>"
                                            title="上升"
-                                           class="tr_rank" data-direction="up"><i class="icon-chevron-up"></i></a>
+                                           class="tr_rank" data-direction="up"><i
+                                                class="glyphicon glyphicon-chevron-up"></i></a>
                                         <a href="javascript:void(0);"
                                            data-table="<?php echo $children_relation['table']->table_name; ?>"
                                            title="下降"
-                                           class="tr_rank" data-direction="down"><i class="icon-chevron-down"></i></a>
+                                           class="tr_rank" data-direction="down"><i
+                                                class="glyphicon glyphicon-chevron-down"></i></a>
                                         <a href="javascript:void (0);"
                                            data-table="<?php echo $children_relation['table']->table_name; ?>"
-                                           class="tr_remove"><i class="icon-remove"></i></a>
+                                           class="tr_remove"><i class="glyphicon glyphicon-remove"></i></a>
                                         <a href="javascript:void (0);"
                                            data-table="<?php echo $children_relation['table']->table_name; ?>"
-                                           class="tr_add"><i class="icon-plus"></i></a>
+                                           class="tr_add"><i class="glyphicon glyphicon-plus"></i></a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -129,13 +131,14 @@
             <?php endif; ?>
             <div class="form-actions">
                 <button class="btn btn-info" onclick="document.getElementById('JStatus').value='create';" type="submit">
-                    保存
+
+                    添加到待发布
                 </button>
                 <button class="btn btn-primary" onclick="document.getElementById('JStatus').value='save';"
-                        type="submit">创建
+                        type="submit">保存
                 </button>
                 <a href="<?php echo URL::action('CmsController@index', array('id' => $table->id)); ?>"
-                   class="btn">取消</a>
+                   class="btn btn-warning">取消</a>
             </div>
         </form>
         <?php echo \Utils\FormBuilderHelper::end('cms_form', 'beforeSubmit'); ?>
@@ -151,7 +154,7 @@
         </script>
     </div>
 <?php else: ?>
-    <div class="alert alert-error">
+    <div class="alert alert-danger">
         <strong>哎出现问题!</strong> 请去表列表中创建表单,以便添加数据.
     </div>
 <?php endif; ?>

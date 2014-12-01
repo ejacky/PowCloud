@@ -23,7 +23,7 @@
                         <?php echo $table->table_alias; ?>
                         <?php if ($table->property): ?>
                             <a class="comment" rel="popover" href="javascript:void(0)" data-original-title="表结构">
-                                <i class="icon-comment"></i>
+                                <i class="glyphicon glyphicon-comment"></i>
                             </a>
                             <p class="hide"><?php echo $table->property; ?></p>
                         <?php endif; ?>
@@ -37,7 +37,8 @@
                     <td><?php echo $table->user_id && $table->user ? $table->user->name : 'unknow'; ?></td>
                     <td>
                         <a href="<?php echo URL::action('SchemaBuilderController@docsHtml', array('table' => $table->table_name)) ?>"
-                           data-target="#docs" data-toggle="modal"><span class="label label-info">文档</span></a></td>
+                           data-target="#docs" data-toggle="modal"><span
+                                class="label label-default label-success">文档</span></a></td>
                     <td><?php echo $table->path_id ?></td>
                     <td>
                         <!--                        <a href="--><?php
@@ -45,33 +46,36 @@
 //                            echo URL::action('SchemaBuilderController@apiInfo', array('table' => $table->table_name));
 //                        }
 //                        ?><!--" target="_blank">-->
-                            <span class="label label-<?php echo $table->restful == 1 ? 'info' : 'disable'; ?>">
+                            <span class="label label-<?php echo $table->restful == 1 ? 'success' : 'warning'; ?>">
                         <?php echo $table->restful == 1 ? '支持' : '不支持(未绑定路由)'; ?>
                                 <!--                        </a>-->
                     </td>
                     <td>
-                        <span class="label label-<?php echo $table->index === null ? 'disable' : 'info'; ?>">list</span>
                         <span
-                            class="label label-<?php echo $table->update === null ? 'disable' : 'info'; ?>">edit</span>
+                            class="pow_label label label-<?php echo $table->index === null ? 'warning' : 'success'; ?>">list</span>
                         <span
-                            class="label label-<?php echo $table->create === null ? 'disable' : 'info'; ?>">create</span>
+                            class="pow_label label label-<?php echo $table->update === null ? 'warning' : 'success'; ?>">edit</span>
                         <span
-                            class="label label-<?php echo $table->delete === null ? 'disable' : 'info'; ?>">delete</span>
+                            class="pow_label label label-<?php echo $table->create === null ? 'warning' : 'success'; ?>">create</span>
+                        <span
+                            class="pow_label label label-<?php echo $table->delete === null ? 'warning' : 'success'; ?>">delete</span>
                     </td>
                     <td><?php echo $table->updated_at; ?></td>
                     <td class="operation">
                         <a href="<?php echo URL::action('SchemaBuilderController@tableSchema', array('table' => $table->id)); ?>"
-                           title="表结构"><i class="icon-th"></i></a>
+                           title="表结构"><i class="glyphicon glyphicon-th"></i></a>
+
                         <a href="<?php echo URL::action('SchemaBuilderController@edit', array('table' => $table->id)) ?>"
-                           title="修改"><i class="icon-pencil"></i></a>
-                        <!--                        <a class="JS_tableOp" href="javascript:void(0) "-->
-                        <!--                           data-url="-->
-                        <?php //echo URL::action('SchemaBuilderController@destroy', array('table' => $table->id)) ?><!--"-->
-                        <!--                           data-target="-->
-                        <?php //echo $table->id; ?><!--"><i title="删除" class="icon-remove"></i></a>-->
+                           title="修改"><i class="glyphicon glyphicon-pencil"></i></a>
+
+
+                        <a class="JS_tableOp" href="javascript:void(0) "
+                           data-url="<?php echo URL::action('SchemaBuilderController@destroy', array('table' => $table->id)) ?>"
+                           data-target=" <?php echo $table->id; ?>"><i title="删除"
+                                                                       class="glyphicon glyphicon-remove"></i></a>
                         <a title="配置选项"
                            href="<?php echo URL::action('SchemaBuilderController@tableOptions', array('table' => $table->id)) ?>"
-                           class=""><i class="icon-cog"></i></a>
+                           class=""><i class="glyphicon glyphicon-cog"></i></a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -80,16 +84,26 @@
 
         <?php echo $tables ? $tables->links() : ''; ?>
 
-        <div id="docs" style="height: 500px;;" class="modal hide fade" tabindex="-1" role="dialog"
-             aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">文档</h3>
-            </div>
-            <div class="modal-body" style="height: 100%">
-                <p></p>
+        <div class="modal fade" id="docs" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="height: 500px;;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                                class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">文档</h4>
+                    </div>
+                    <div class="modal-body" style="height: 100%">
+                        <p></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
             </div>
         </div>
+
+
     </div>
 
     <script>
